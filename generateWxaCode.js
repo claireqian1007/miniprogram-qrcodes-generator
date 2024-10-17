@@ -32,7 +32,7 @@ async function createWxaCode(access_token, path, savePath) {
   }
 }
 
-function extractUtmCampaign(path) {
+function generateFileName(path) {
   const urlParams = new URLSearchParams(path?.split("?")[1]);
   return (
     `${urlParams.get("utm_campaign")}_${urlParams.get("vehicleClass")}` || "default" //示例为从路径参数中取值作为文件名
@@ -44,7 +44,7 @@ function readUrlListFromXlsx() {
   const sheet = workbook.Sheets["Sheet1"];
   const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
     // return columnArray = data.map(row => row[3]); //假设你想转化的列是第一列（索引为0）
-  return (columnArray = data.slice(0, 7).map((row) => row[3])); //从第3列选择第1行到第6行的数据。
+  return (columnArray = data.slice(0, 7).map((row) => row[3])); //从第4列选择第1行到第6行的数据。
 }
 
 function ensureDirectoryExists(folderPath) {
@@ -68,7 +68,7 @@ async function main() {
     const pagePaths = readUrlListFromXlsx(); // 你的小程序页面路径列表
     pagePaths.forEach((url) => {
       ensureDirectoryExists(folderName);
-      const savePath = path.join(folderName, `${extractUtmCampaign(url)}.png`);
+      const savePath = path.join(folderName, `${generateFileName(url)}.png`);
       createWxaCode(accessToken, url, savePath);
     });
   }
